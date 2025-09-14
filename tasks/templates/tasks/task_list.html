@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Tasks</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'todo/styles.css' %}">
+    <link rel="manifest" href="{% static 'pwa/manifest.json' %}">
+<script>
+    if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register("{% static 'pwa/serviceworker.js' %}")
+    .then(() => console.log('Service Worker registered'));
+  }
+</script>
+
+</head>
+<body>
+    <div class="container">
+        <h1>My Tasks</h1>
+
+        <!-- Show logged-in user + Logout link -->
+        <p>
+            Logged in as: {{ request.user.username }}
+            | <a href="{% url 'logout' %}">Logout</a>
+        </p>
+
+        <!-- Add Task Button -->
+        <p><a href="{% url 'todo:task-create' %}">➕ Add Task</a></p>
+
+        <!-- ---------------- Incomplete Tasks ---------------- -->
+        <h2>Incomplete Tasks</h2>
+        <ul>
+          {% for task in tasks %}
+            <li>
+              {{ task.title }} ❌ Not Done
+              <!-- Actions -->
+              <a href="{% url 'todo:task-toggle' task.id %}">Toggle</a> |
+              <a href="{% url 'todo:task-create' %}?edit={{ task.id }}">Edit</a> |
+              <a href="{% url 'todo:task-delete' task.id %}">Delete</a>
+            </li>
+          {% empty %}
+            <li>No incomplete tasks.</li>
+          {% endfor %}
+        </ul>
+
+        <!-- ---------------- Completed Tasks ---------------- -->
+        <h2>Completed Tasks</h2>
+        <ul>
+          {% for task in completed_tasks %}
+            <li class="completed">
+              {{ task.title }} ✅ Done
+              <!-- Actions -->
+              <a href="{% url 'todo:task-toggle' task.id %}">Toggle</a> |
+              <a href="{% url 'todo:task-delete' task.id %}">Delete</a>
+            </li>
+          {% empty %}
+            <li>No completed tasks.</li>
+          {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

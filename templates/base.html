@@ -1,0 +1,82 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}To-Do App{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'todo/styles.css' %}">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f8f9fa;
+    }
+    nav {
+      background: #343a40;
+      color: white;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    nav .brand {
+      font-size: 20px;
+      font-weight: bold;
+      color: #ffffff;
+    }
+    nav a {
+      color: #ffc107;
+      margin-left: 15px;
+      text-decoration: none;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    .container {
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+    footer {
+      background: #343a40;
+      color: #ddd;
+      text-align: center;
+      padding: 10px;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="brand">✅ To-Do App</div>
+    <div>
+      {% if user.is_authenticated %}
+  Hello <strong>{{ user.username }}</strong> |
+  <form action="{% url 'logout' %}" method="post" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" style="background:none;border:none;color:#ffc107;cursor:pointer;">
+      Logout
+    </button>
+  </form>
+{% else %}
+  <a href="{% url 'login' %}">Login</a> |
+  <a href="{% url 'todo:register' %}">Register</a>
+{% endif %}
+
+    </div>
+  </nav>
+
+  <div class="container">
+    {% block content %}{% endblock %}
+  </div>
+
+  <footer>
+    &copy; {{ now|date:"Y" }} To-Do App | Built with Django 🐍
+  </footer>
+</body>
+</html>
